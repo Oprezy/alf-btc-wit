@@ -1,0 +1,30 @@
+
+### get all address
+GET http://localhost:2010/address/
+Content-Type: application/json
+
+### get single address balance
+GET http://localhost:2010/address/balance
+Content-Type: application/json
+
+### delete single address
+DELETE http://localhost:1007/address/
+Content-Type: application/json
+{
+    "address": "address2"
+}
+
+### create new address
+POST http://localhost:2010/address/
+Content-Type: application/json
+{
+    "address": "37xpfzwJyhNiJ47Y7ty7MKDKaxQLULkC2G",
+    "exchangeId": "65ae105c-b45e-4a62-86a6-f06a1ae72589"
+}
+
+
+
+
+### test
+GET http://localhost:2010/address/test
+Content-Type: application/json

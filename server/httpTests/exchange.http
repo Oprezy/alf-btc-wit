@@ -1,0 +1,26 @@
+
+### get all exchange
+GET http://localhost:2011/exchange/
+Content-Type: application/json
+
+### get single exchange
+GET http://localhost:1007/exchange/exchange2
+Content-Type: application/json
+
+### delete single exchange
+DELETE http://localhost:1007/exchange/
+Content-Type: application/json
+{
+    "exchange": "exchange2"
+}
+
+### create new exchange
+POST http://localhost:2011/exchange/
+Content-Type: application/json
+{
+    "name": "NewJ",
+    "url": "http://jackocoins.com/",
+    "address": "bc1qeqwzr4rnactxkcq90zu6e05wl40x7dxg3vfgzl"
+}
+
+// 31rzHrESTGUTN8F4GV29TnZCRnT7V1FuCj

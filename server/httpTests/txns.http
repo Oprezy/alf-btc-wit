@@ -1,0 +1,59 @@
+
+### create new exchange
+POST http://localhost:2011/exchange/
+Content-Type: application/json
+{
+    "name": "TFada",
+    "url": "http://tradefada.com/",
+    "address": "bc1qdfl3dfnwwvlqa5jpckh0ccwpjczh5y566c4g76"
+}
+
+ 
+ 
+### 1. save hash from addresses
+GET http://localhost:2011/txn/save-hash-from-address
+Content-Type: application/json
+
+### 2. save txns from hashes
+GET http://localhost:2011/txn/get-txns-hash
+Content-Type: application/json
+
+### 3. save addresses from hashes and Txns
+GET http://localhost:2011/txn/save-addresses
+Content-Type: application/json
+
+### 4. update address alias
+GET http://localhost:2011/txn/update-alias
+Content-Type: application/json
+
+### abstract - fees
+GET http://localhost:2011/txn/fees
+Content-Type: application/json
+
+
+ 
+
+
+# FRONTEND API
+### 1. get inputs and outputs
+POST http://localhost:2011/txn/get-txn
+Content-Type: application/json
+{
+    "hash": "715ed948be87d4240d0cffb1b42aa55ba01d712bfa26ca6e5523d9784563fb02"
+}
+
+### 2. get all Txns
+GET http://localhost:2011/txn/get-recent-txns
+
+### 3. get exchange stats
+GET http://localhost:2011/txn/exchange-stats
+Content-Type: application/json
+
+### 4. get grouped-address-txns
+POST http://localhost:2011/txn/grouped-address-txns
+Content-Type: application/json
+{
+    "address": "31rzHrESTGUTN8F4GV29TnZCRnT7V1FuCj"
+}
+### 5. save missed txns from missed hashes
+GET http://localhost:2011/txn/save-missed-txns
