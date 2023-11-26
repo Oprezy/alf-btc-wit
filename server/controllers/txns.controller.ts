@@ -651,6 +651,8 @@ class TxnController {
   };
 
   runAllJobs = async () => {
+    console.log('running all jobs...');
+    
     const delay = (ms: number) =>
       new Promise((resolve) => setTimeout(resolve, ms));
     await this.saveHashFromAddress();

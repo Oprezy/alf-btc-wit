@@ -7,3 +7,4 @@ const localApiClient = axios.create({
 export default localApiClient;
 
 // http://localhost:2011/
+// http://x.preziy.com.ng:2011/

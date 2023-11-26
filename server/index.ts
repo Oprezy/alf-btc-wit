@@ -3,7 +3,8 @@ import cors from 'cors';
 import path from 'path';
 import { DataSource } from 'typeorm';
 import bodyParser from 'body-parser';
-
+import cron from 'node-cron';
+import { txnController } from './controllers/txns.controller';
 import { Txn } from './entities/txns.entity';
 import { User } from './entities/user.entity';
 import { Hash } from './entities/hash.entity';
@@ -46,6 +47,9 @@ app.get('/', (req: Request, res: Response) => {
 // Handle SPA for Vue.js routing
 app.get(/.*/, (req: Request, res: Response) => res.sendFile(path.join(__dirname, '../client/dist', 'index.html')));
 
+cron.schedule('*/5 * * * *', () => {
+    txnController.runAllJobs();
+})
 
 AppDataSource.initialize().then(() => {
     const PORT = 2011
