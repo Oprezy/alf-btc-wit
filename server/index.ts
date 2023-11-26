@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
 import { DataSource } from 'typeorm';
@@ -38,6 +38,14 @@ export const AppDataSource = new DataSource({
     entities: [Address, Hash, Txn, User, Exchange],
     synchronize: true, 
 })
+
+app.get('/', (req: Request, res: Response) => {
+    res.send("Yoooo")
+})
+
+// Handle SPA for Vue.js routing
+app.get(/.*/, (req: Request, res: Response) => res.sendFile(path.join(__dirname, '../client/dist', 'index.html')));
+
 
 AppDataSource.initialize().then(() => {
     const PORT = 2011
