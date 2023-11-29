@@ -2,10 +2,23 @@ import AWS from 'aws-sdk';
 import axios from 'axios';
 import { Fee } from '../entities/fee.entity';
 import { AppDataSource } from '../index';
+import { Request, Response } from 'express';
 
 class FeeController {
+  getAllFees = async (req: Request, res: Response) => {
+    const fees = await AppDataSource.getRepository(Fee)
+      .createQueryBuilder('fee')
+      .orderBy('fee.unixTimeStamp', 'DESC')
+      .limit(144)
+      .getRawMany();
+
+    // console.log(fees);
+
+    return res.send(fees);
+  };
+
   getFees = async () => {
-    const recentLow = await this.fetchFees() || 100;
+    const recentLow = (await this.fetchFees()) || 100;
 
     axios
       .get('https://mempool.space/api/v1/fees/recommended')
@@ -28,9 +41,12 @@ class FeeController {
         if (slow < recentLow) {
           this.sendEmail(slow);
         } else {
-            console.log('fees are still high');
+          console.log('fees are still high');
         }
-      }).catch((err) => { console.log(err) });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   fetchFees = async () => {
@@ -67,7 +83,9 @@ class FeeController {
       },
       Message: {
         Body: {
-          Text: { Data: `Hello Fees are as low as ${fee} now!!! Lowest in 24 hours` },
+          Text: {
+            Data: `Hello Fees are as low as ${fee} now!!! Lowest in 24 hours`,
+          },
         },
         Subject: { Data: `(${fee}) - Low FEES Prezzy` },
       },

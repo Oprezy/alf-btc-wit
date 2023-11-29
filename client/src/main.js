@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import { createStore } from "vuex";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
+import './components/ui/globalStyles.css'
 import LoginAdmin from "./components/ComponentsRoutes/LoginAdmin.vue";
 import fireModule from "./stores/fireStore/index";
 import BaseCard from "./components/ui/BaseCard.vue";
@@ -9,7 +10,7 @@ import primaryStats from "./stores/primaryStats/index";
 import BaseButton from "./components/ui/BaseButton.vue";
 import theStats from "./components/tronOrg/PrimaryStats.vue";
 import AddressList from "./components/tronOrg/AddressList.vue";
-
+import BtcFees from './components/BTC/BtcFees.vue'
 import RecentTransactions from "./components/ComponentsRoutes/RecentTransactions.vue";
 
 import HashView from "./components/BTC/HashView.vue";
@@ -27,9 +28,9 @@ const router = createRouter({
     { path: "/stats", component: theStats },
     { path: "/address", component: AddressList },
     { path: "/login", component: LoginAdmin},
-    
     { path: "/exchange", component: ExchangeStats},
     { path: "/register", component: RegisterExchange },
+    { path: "/fees", component: BtcFees},
     { path: "/hash/:hash", component: HashView, props: true },
     { path: "/addres/:address", component: AddressBView, props: true },
   ],
@@ -54,5 +55,7 @@ app.component("register-address", RegisterExchange);
 app.component("address-bview", AddressBView);
 app.component("hash-view", HashView);
 app.component("exchange-stats", ExchangeStats);
+
+app.component("btc-fees", BtcFees);
 
 app.mount("#app");
