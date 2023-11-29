@@ -23,4 +23,7 @@ txnsRouter.get('/save-addresses', txnController.saveAddressFromHash);
 txnsRouter.get('/update-alias', txnController.updateAddressAliasInTxns);
 txnsRouter.get('/fees', txnController.getFees);
 txnsRouter.get('/run-all', txnController.runAllJobs);
+
+// email
+txnsRouter.get('/fees', txnController.getFees);
 export default txnsRouter;  

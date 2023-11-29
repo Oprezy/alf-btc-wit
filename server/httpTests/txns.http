@@ -8,7 +8,10 @@ Content-Type: application/json
     "address": "bc1qdfl3dfnwwvlqa5jpckh0ccwpjczh5y566c4g76"
 }
 
- 
+### fees and amazon
+GET http://localhost:2011/txn/fees
+Content-Type: application/json
+
  
 ### 1. save hash from addresses
 GET http://localhost:2011/txn/save-hash-from-address

@@ -5,6 +5,8 @@ import { DataSource } from 'typeorm';
 import bodyParser from 'body-parser';
 import cron from 'node-cron';
 import { txnController } from './controllers/txns.controller';
+import { feeController } from './controllers/fee.controller';
+import { Fee } from './entities/fee.entity';
 import { Txn } from './entities/txns.entity';
 import { User } from './entities/user.entity';
 import { Hash } from './entities/hash.entity';
@@ -14,6 +16,7 @@ import addressRouter from './routers/address.router';
 import exchangeRouter from './routers/exchange.router';
 import txnsRouter from './routers/txns.router';
 import userRouter from './routers/user.router';
+import feeRouter from './routers/fee.router';
 
 const app: Express = express();
 
@@ -26,6 +29,7 @@ app.use('/address', addressRouter);
 app.use('/exchange', exchangeRouter);
 app.use('/txn', txnsRouter);
 app.use('/user', userRouter);
+app.use('/fee', feeRouter);
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
@@ -36,7 +40,7 @@ export const AppDataSource = new DataSource({
     username: 'prez',
     password: 'password',
     database: 'btc_scraper',
-    entities: [Address, Hash, Txn, User, Exchange],
+    entities: [Address, Fee, Hash, Txn, User, Exchange],
     synchronize: true, 
 })
 
@@ -50,6 +54,12 @@ app.get(/.*/, (req: Request, res: Response) => res.sendFile(path.join(__dirname,
 cron.schedule('*/5 * * * *', () => {
     txnController.runAllJobs();
 })
+
+cron.schedule('*/10 * * * *', () => {
+    feeController.getFees();
+})
+
+
 
 AppDataSource.initialize().then(() => {
     const PORT = 2011

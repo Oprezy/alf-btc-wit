@@ -9,6 +9,9 @@ import { Txn } from '../entities/txns.entity';
 import { log } from 'console';
 // import { instanceToPlain } from 'class-transformer';
 
+// const AWS = require('aws-sdk');
+import AWS from 'aws-sdk';
+
 class TxnController {
   // // FRONTEND
   getTxn = async (req: Request, res: Response) => {
@@ -104,7 +107,7 @@ class TxnController {
 
     return res.send(attachedExchange);
   };
- 
+
   // get address input and output txns
   getAddressInputOutputTxns = async (req: Request, res: Response) => {
     const address = req.body.address;
@@ -320,7 +323,7 @@ class TxnController {
         address: address,
       },
     });
-    if (addressFound)  return;
+    if (addressFound) return;
 
     const exchangeCustomersCount = await this.countAddressesForExchange(
       exchange.id,
@@ -331,7 +334,8 @@ class TxnController {
     newAddress.exchange = exchange;
     newAddress.alias = name + exchangeCustomersCount;
     try {
-      const savedAddress = await AppDataSource.getRepository(Address).save(newAddress);
+      const savedAddress =
+        await AppDataSource.getRepository(Address).save(newAddress);
       console.log('saved new address...', savedAddress);
     } catch (error) {
       log(error);
@@ -341,7 +345,7 @@ class TxnController {
 
   saveAddressFromHash = async () => {
     console.log('here');
-    
+
     const exchangeAndHash = await this.getAllHashes();
     if (!exchangeAndHash) return;
     for (const component of exchangeAndHash) {
@@ -359,24 +363,24 @@ class TxnController {
 
       if (hashAddresses.length == 0) {
         console.log('no hashes+addresses found while trying to save addresses');
-        
+
         return;
       }
       const foundExchangeAddress = hashAddresses.find(
         (address) => address.address == exchangeAddress,
       );
       // console.log(foundExchangeAddress);
-      
+
       if (foundExchangeAddress) {
         // console.log('found exchange address', foundExchangeAddress);
         continue;
-      } 
+      }
 
       const realAddresses = hashAddresses.filter(
         (address) => address.address !== exchangeAddress,
       );
       // console.log(realAddresses);
-      
+
       // console.log('saving addresses for new hash now', hash);
 
       for (const address of realAddresses) {
@@ -405,13 +409,13 @@ class TxnController {
     }
     if (exchange) {
       // console.log('yes, there is an exchange!');
-      
+
       const newHash = AppDataSource.getRepository(Hash).create();
       newHash.hash = hash;
       const timestamp = Date.now();
       newHash.saved = timestamp;
       const date = new Date(timestamp);
-      const readableDate = date.toUTCString() ;
+      const readableDate = date.toUTCString();
       newHash.savedLiteral = readableDate;
       newHash.exchange = exchange;
       try {
@@ -420,7 +424,6 @@ class TxnController {
       } catch (error) {
         // console.error('error: duplicate hash', hash, error);
         console.log(error);
-        
       }
     } else {
       console.log('Exchange not found');
@@ -432,7 +435,7 @@ class TxnController {
     const url = `https://api.blockcypher.com/v1/btc/main/addrs/${address}`;
     await axios
       .get(url)
-      .then( async (response) => {
+      .then(async (response) => {
         const txns = response.data.txrefs;
         // console.log(txns);
         for (const txn of txns) {
@@ -442,9 +445,8 @@ class TxnController {
       })
       .catch((error) => {
         console.error(error);
-      }
-      );
-  }; 
+      });
+  };
 
   receiveAddressSaveHashes = async (req: Request, res: Response) => {
     const address = req.body.address;
@@ -479,7 +481,7 @@ class TxnController {
       console.log(address.address);
       await delay(5000);
       console.log('address.address', address.address);
-      
+
       this.saveHashGivenAddress(address.address);
     }
   };
@@ -552,25 +554,24 @@ class TxnController {
     } catch (error) {
       console.error('error');
     }
-  }; 
+  };
   // helper3 - getTxnsByHash
   getOneHashTxns = async (hash: string) => {
     console.log('checking if hash is saved...');
-    
+
     // check if hash is saved...
     const hashFoundInTxn = await AppDataSource.getRepository(Txn)
       .createQueryBuilder('txn')
       .select('hash')
       .where({ hash: hash })
-      .getRawMany(); 
+      .getRawMany();
 
     if (hashFoundInTxn.length > 0) {
       console.log(hash, ' is already registered!');
       // log(hashFoundInTxn);
       return;
-    }else {
+    } else {
       console.log('saving this hash now...', hash);
-      
     }
 
     console.log('saving', hash);
@@ -610,7 +611,7 @@ class TxnController {
 
   getTxnsByHash = async () => {
     console.log('getting all Txns by hash...');
-    
+
     const hashes = await this.getHashes();
     if (!hashes) return;
     // console.log(hashes);
@@ -624,7 +625,7 @@ class TxnController {
       // console.log('getting txns for this..', hash);
       await this.getOneHashTxns(hash);
     }
-  }; 
+  };
 
   //  stand alone. edit all Txns and Update Address Alias
   updateAddressAliasInTxns = async () => {
@@ -652,7 +653,7 @@ class TxnController {
 
   runAllJobs = async () => {
     console.log('running all jobs...');
-    
+
     const delay = (ms: number) =>
       new Promise((resolve) => setTimeout(resolve, ms));
     await this.saveHashFromAddress();
@@ -663,17 +664,44 @@ class TxnController {
     await delay(5000);
     await this.updateAddressAliasInTxns();
     await delay(5000);
-  }
+  };
 
   // Abstract
-  getFees =async () => {
-    axios.get('https://mempool.space/api/v1/fees/recommended')
-    .then((response) => {
-      const data = response.data;
-      console.log(data.fastestFee);
-      
-    })
-  }
+  getFees = async () => {
+    axios
+      .get('https://mempool.space/api/v1/fees/recommended')
+      .then((response) => {
+        const data = response.data;
+        console.log(data.fastestFee);
+      });
+
+    // doing some aws stuff here
+
+    AWS.config.update({
+      accessKeyId: 'AKIAV46S6RV5G4OAQ6EV',
+      secretAccessKey: 'MZ0e58eFeBmU7LDtAU49D41SRwy0ieTgqpjiGLD1',
+      region: 'eu-west-2', // change to your region
+    });
+
+    const ses = new AWS.SES();
+    const params = {
+      Source: 'prezdevo@gmail.com',
+      Destination: {
+        ToAddresses: ['prezdevo@gmail.com'],
+      },
+      Message: {
+        Body: {
+          Text: { Data: 'Hello from Amazon SES!' },
+        },
+        Subject: { Data: 'Test Email' },
+      },
+    };
+
+    ses.sendEmail(params, function (err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else console.log(data); // successful response
+    });
+  };
 }
 
 export const txnController = new TxnController();

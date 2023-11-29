@@ -1,0 +1,9 @@
+
+### fees and amazon
+GET http://localhost:2011/fee/
+Content-Type: application/json
+
+### get all fees
+GET http://localhost:2011/fee/all-fees
+Content-Type: application/json 
+
