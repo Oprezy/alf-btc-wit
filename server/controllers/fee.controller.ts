@@ -70,16 +70,16 @@ class FeeController {
     // doing some aws stuff here
 
     AWS.config.update({
-      accessKeyId: 'AKIAV46S6RV5G4OAQ6EV',
-      secretAccessKey: 'MZ0e58eFeBmU7LDtAU49D41SRwy0ieTgqpjiGLD1',
+      accessKeyId: 'AKIAV4',
+      secretAccessKey: 'MZ0e58eFeBmU7LDt',
       region: 'eu-west-2', // change to your region
     });
 
     const ses = new AWS.SES();
     const params = {
-      Source: 'prezdevo@gmail.com',
+      Source: 'prvo@gmail.com',
       Destination: {
-        ToAddresses: ['strendac@gmail.com'],
+        ToAddresses: ['stc@gmail.com'],
       },
       Message: {
         Body: {
