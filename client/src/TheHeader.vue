@@ -3,6 +3,7 @@
     <nav>
       <h1><router-link to="/"> TRNN! </router-link></h1>
       <ul>
+        <li><router-link to="/fees">Fees </router-link></li>
         <li><router-link to="/exchange">Exchanges </router-link></li>
         <li><router-link to="/register">Register Exchange </router-link></li>
         <li v-if="!logged_in"><router-link to="/login">Login </router-link></li>

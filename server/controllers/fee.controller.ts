@@ -79,7 +79,7 @@ class FeeController {
     const params = {
       Source: 'prezdevo@gmail.com',
       Destination: {
-        ToAddresses: ['prezdevo@gmail.com'],
+        ToAddresses: ['strendac@gmail.com'],
       },
       Message: {
         Body: {
